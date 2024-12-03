@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 
-public class Main {
+public class Main1 {
     public static void main(String[] args) {
 
         String filePath = "day01/input.txt";
