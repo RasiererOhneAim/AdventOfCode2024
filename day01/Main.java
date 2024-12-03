@@ -4,7 +4,7 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
 
-        String filePath = "day01/test_input.txt";
+        String filePath = "day01/input.txt";
         ArrayList<Integer> leftNumbers = new ArrayList<>();
         ArrayList<Integer> rightNumbers = new ArrayList<>();
 
@@ -27,7 +27,8 @@ public class Main {
         quickSort(leftArray, 0, leftArray.length - 1);
         quickSort(rightArray, 0, rightArray.length - 1);
 
-        compare(leftArray,rightArray);
+        System.out.println(compare(leftArray,rightArray));
+        System.out.println(simScore(leftArray,rightArray));
     }
 
     private static void quickSort(int[] arr, int begin, int end) {
@@ -67,7 +68,7 @@ public class Main {
         System.out.println();
     }
 
-    private static void compare(int[] arr1, int[] arr2) {
+    private static int compare(int[] arr1, int[] arr2) {
         int distance = 0;
         for (int i = 0; i < arr1.length; i++) {
             if (arr1[i] < arr2[i]) {
@@ -83,6 +84,22 @@ public class Main {
                 distance = distance + temp;
             }
         }
-        System.out.println(distance);
+        return distance;
+    }
+
+    private static int simScore(int[] arr1, int[] arr2){
+        int simScore = 0;
+        for (int i = 0; i < arr1.length; i++) {
+            simScore = simScore + (arr1[i]*value(arr2, arr1[i]));
+        }
+        return simScore;
+    }
+
+    private static int value(int[] arr, int value){
+        int v = 0;
+        for(int i = 0; i < arr.length; i++){
+            if(arr[i] == value){v++;}
+        }
+        return v;
     }
 }
