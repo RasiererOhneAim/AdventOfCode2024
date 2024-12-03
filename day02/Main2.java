@@ -55,22 +55,65 @@ public class Main2 {
         int safeness = 0;
         for (int i = 0; i < List().size(); i++) {
             int[] row = grabArray(List(), i);
+            int puffer = 1;
 
             if (!checkIfArrayIsAscendingOrDescending(row)) {
-                continue;
-            }
-
-            boolean isSafe = true;
-            for (int j = 1; j < row.length; j++) {
-                int diff = row[j - 1] - row[j];
-                int absDiff = Math.abs(diff);
-
-                if (absDiff < 1 || absDiff > 3) {
-                    isSafe = false;
-                    break;
+                if (puffer != 1) {
+                    continue;
                 }
+                puffer--;
             }
-            if (isSafe) safeness++;
+
+            if (puffer == 1) {
+                boolean isSafe = true;
+                for (int j = 1; j < row.length; j++) {
+                    int diff = Math.abs(row[j - 1] - row[j]);
+                    if (diff < 1 || diff > 3) {
+                        try {
+                            int diff2 = Math.abs(row[j - 1] - row[j + 1]);
+                            if ((diff2 > 0 && diff2 < 4)) {
+                                break;
+                            }
+                            puffer--;
+                            isSafe = false;
+                            break;
+                        } catch (Exception e) {
+                            puffer--;
+                            if (diff != 0) {
+                                continue;
+                            }
+                            isSafe = false;
+                            break;
+                        }
+                    }
+                }
+                if (isSafe) safeness++;
+            }else{
+                boolean isSafe = true;
+                for (int j = 1; j < row.length; j++) {
+                    int diff = Math.abs(row[j - 1] - row[j]);
+                    if (diff < 1 || diff > 3) {
+                        try {
+                            int diff2 = Math.abs(row[j - 2] - row[j]);
+                            if ((diff2 > 0 && diff2 < 4)) {
+                                break;
+                            }
+                            puffer--;
+                            isSafe = false;
+                            break;
+                        } catch (Exception e) {
+                            puffer--;
+                            if (diff != 0) {
+                                continue;
+                            }
+                            isSafe = false;
+                            break;
+                        }
+                    }
+                }
+                if (isSafe) safeness++;
+
+            }
         }
         return safeness;
     }
