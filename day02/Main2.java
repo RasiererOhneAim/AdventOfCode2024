@@ -12,7 +12,7 @@ public class Main2 {
 
     public static void main(String[] args) {
         printList(List());
-        System.out.println(checkArrays());
+        System.out.println(checkArrays2());
     }
 
     public static void printList(List<int[]> lineArrays) {
@@ -28,7 +28,7 @@ public class Main2 {
 
     public static List<int[]> List() {
 
-        String filePath = TEST_INPUT_FILE_NAME;
+        String filePath = REAL_INPUT_FILE_NAME;
         List<int[]> lineArrays = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
@@ -51,71 +51,66 @@ public class Main2 {
         return lineArrays.get(indexToAccess);
     }
 
-    public static int checkArrays() {
+    public static int checkArrays1() {
         int safeness = 0;
         for (int i = 0; i < List().size(); i++) {
             int[] row = grabArray(List(), i);
-            int puffer = 1;
-
             if (!checkIfArrayIsAscendingOrDescending(row)) {
-                if (puffer != 1) {
-                    continue;
-                }
-                puffer--;
+                continue;
             }
+            if (isSafe1(row)) safeness++;
+        }
+        return safeness;
+    }
 
-            if (puffer == 1) {
-                boolean isSafe = true;
-                for (int j = 1; j < row.length; j++) {
-                    int diff = Math.abs(row[j - 1] - row[j]);
-                    if (diff < 1 || diff > 3) {
-                        try {
-                            int diff2 = Math.abs(row[j - 1] - row[j + 1]);
-                            if ((diff2 > 0 && diff2 < 4)) {
-                                break;
-                            }
-                            puffer--;
-                            isSafe = false;
-                            break;
-                        } catch (Exception e) {
-                            puffer--;
-                            if (diff != 0) {
-                                continue;
-                            }
-                            isSafe = false;
-                            break;
-                        }
+    public static int checkArrays2(){
+        int safeness = 0;
+        for (int i = 0; i < List().size(); i++) {
+            int[] row = grabArray(List(), i);
+            boolean safe = isSafe1(row);
+            int safen=0;
+            if (!safe) {
+                for(int j =0; j<row.length; j++) {
+                    safe = isSafe2(row, j);
+                    if(safe) {
+                        break;
                     }
                 }
-                if (isSafe) safeness++;
-            }else{
-                boolean isSafe = true;
-                for (int j = 1; j < row.length; j++) {
-                    int diff = Math.abs(row[j - 1] - row[j]);
-                    if (diff < 1 || diff > 3) {
-                        try {
-                            int diff2 = Math.abs(row[j - 2] - row[j]);
-                            if ((diff2 > 0 && diff2 < 4)) {
-                                break;
-                            }
-                            puffer--;
-                            isSafe = false;
-                            break;
-                        } catch (Exception e) {
-                            puffer--;
-                            if (diff != 0) {
-                                continue;
-                            }
-                            isSafe = false;
-                            break;
-                        }
-                    }
-                }
-                if (isSafe) safeness++;
-
+            }
+            if (safe){
+                safeness++;
             }
         }
         return safeness;
+    }
+
+    private static boolean isSafe1(int[] arr){
+        boolean isSafe = true;
+        for (int j = 1; j < arr.length; j++) {
+            int diff = Math.abs(arr[j - 1] - arr[j]);
+            if (diff < 1 || diff > 3) {
+                isSafe = false;
+                break;
+            }
+        }
+        return isSafe;
+    }
+
+    private static boolean isSafe2(int[] arr, int i) {
+        int[] array = new int[arr.length-1];
+        int f = i+1;
+        if(i!=0){
+            i--;
+            while (i>=0){
+                array[i] = arr[i];
+                i--;
+            }
+        }
+        while (f<arr.length){
+            array[f-1] = arr[f];
+            f++;
+        }
+        return isSafe1(array);
     }
 
     public static boolean checkIfArrayIsAscendingOrDescending(int[] array) {
