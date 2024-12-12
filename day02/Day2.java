@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Main2 {
+public class Day2 {
     public static String TEST_INPUT_FILE_NAME = "day02/test_input.txt";
     public static String REAL_INPUT_FILE_NAME = "day02/input.txt";
 
