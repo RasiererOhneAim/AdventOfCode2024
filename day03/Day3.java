@@ -1,6 +1,5 @@
 static final Pattern mulPattern = Pattern.compile("(mul\\(\\d{1,3},\\d{1,3}\\))|(do\\(\\))|(don't\\(\\))");
-static final Pattern doPattern = Pattern.compile("do\\(\\)", Pattern.MULTILINE);
-static final Pattern dontPattern = Pattern.compile("don\\'t\\(\\)", Pattern.MULTILINE);
+static final Pattern pattern = Pattern.compile("(mul\\(\\d{1,3},\\d{1,3}\\))");
 
 
 public static final String TEST_INPUT_FILE = "day03/test_input.txt";
@@ -10,8 +9,8 @@ public static final String REAL_INPUT_FILE = "day03/input.txt";
 static String FILE_CACHE = null;
 
 public static void main() {
-    int i = part2();
-    System.out.println(i);
+    System.out.println("Part 2: " + part2());
+    System.out.println("Part 1: " + part1());
 }
 
 private static int multiply(String mul) {
@@ -22,7 +21,7 @@ private static int multiply(String mul) {
 
 public static int part1() {
     int sum = 0;
-    Matcher matcher = mulPattern.matcher(loadFile());
+    Matcher matcher = pattern.matcher(loadFile());
 
     while (matcher.find()) {
         for (int i = 1; i <= matcher.groupCount(); i++) {
