@@ -27,7 +27,7 @@ public class Day6 {
     }
 
     public static List<String> lines() throws IOException {
-        String filePath = TEST_INPUT_FILE;
+        String filePath = REAL_INPUT_FILE;
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         List<String> lineArrays = new ArrayList<>();
         String line;
@@ -37,48 +37,113 @@ public class Day6 {
         return lineArrays;
     }
 
-    public static int part1() throws IOException{
+    public static int part1() throws IOException {
         List<String> inputLines = lines();
+        List<String> tempLines = inputLines;
         int count = 0;
         boolean event = false;
-        while(!event) {
-            informations infos = CheckForArrows(inputLines);
+        while (!event) {
+            boolean move = false;
+            informations infos = CheckForArrows(tempLines);
             if (infos.thisLinesIndex == -1 && infos.thisCharIndex == -1) {
                 event = true;
                 continue;
             }
-            String line = inputLines.get(infos.thisLinesIndex);
+            String line = tempLines.get(infos.thisLinesIndex);
             StringBuilder prevLine = new StringBuilder(line);
-            prevLine.setCharAt(infos.thisCharIndex, 'X');
-            inputLines.set(infos.thisLinesIndex, prevLine.toString());
             switch (infos.thisDirection) {
                 case "right":
-                    prevLine.setCharAt(infos.thisCharIndex + 1, '>');
+                    if (infos.thisCharIndex < prevLine.length() - 1) {
+                        if (prevLine.charAt(infos.thisCharIndex + 1) == '#') {
+                            prevLine.setCharAt(infos.thisCharIndex, 'v');
+                            tempLines.set(infos.thisLinesIndex, prevLine.toString());
+                        } else {
+                            if (prevLine.charAt(infos.thisCharIndex + 1) == 'X') {
+                                count--;
+                            }
+                            prevLine.setCharAt(infos.thisCharIndex + 1, '>');
+                            tempLines.set(infos.thisLinesIndex, prevLine.toString());
+                            move = true;
+                        }
+                    } else {
+                        event = true;
+                        move = true;
+                    }
+                    break;
                 case "left":
-                    prevLine.setCharAt(infos.thisCharIndex - 1, '<');
+                    if (infos.thisCharIndex > 0) {
+                        if (prevLine.charAt(infos.thisCharIndex - 1) == '#') {
+                            prevLine.setCharAt(infos.thisCharIndex, '^');
+                            tempLines.set(infos.thisLinesIndex, prevLine.toString());
+                        } else {
+                            if (prevLine.charAt(infos.thisCharIndex - 1) == 'X') {
+                                count--;
+                            }
+                            prevLine.setCharAt(infos.thisCharIndex - 1, '<');
+                            tempLines.set(infos.thisLinesIndex, prevLine.toString());
+                            move = true;
+                        }
+                    } else {
+                        event = true;
+                        move = true;
+                    }
+                    break;
                 case "up":
-                    String temp = inputLines.get(infos.thisLinesIndex - 1);
-                    StringBuilder newLine = new StringBuilder(temp);
-                    newLine.setCharAt(infos.thisCharIndex, '^');
+                    if (infos.thisLinesIndex > 0) {
+                        String temp3 = tempLines.get(infos.thisLinesIndex - 1);
+                        StringBuilder newLine3 = new StringBuilder(temp3);
+                        if (temp3.charAt(infos.thisCharIndex) == '#') {
+                            prevLine.setCharAt(infos.thisCharIndex, '>');
+                            tempLines.set(infos.thisLinesIndex, prevLine.toString());
+                        } else {
+                            if (temp3.charAt(infos.thisCharIndex) == 'X') {
+                                count--;
+                            }
+                            newLine3.setCharAt(infos.thisCharIndex, '^');
+                            tempLines.set(infos.thisLinesIndex - 1, newLine3.toString());
+                            move = true;
+                        }
+                    } else {
+                        event = true;
+                        move = true;
+                    }
+                    break;
                 case "down":
-                    temp = inputLines.get(infos.thisLinesIndex + 1);
-                    newLine = new StringBuilder(temp);
-                    newLine.setCharAt(infos.thisCharIndex, 'v');
-                    inputLines.set(infos.thisLinesIndex - 1, temp);
-                    inputLines.set(infos.thisLinesIndex + 1, newLine.toString());
+                    if (infos.thisLinesIndex < tempLines.size() - 1) {
+                        String temp4 = tempLines.get(infos.thisLinesIndex + 1);
+                        StringBuilder newLine4 = new StringBuilder(temp4);
+                        if (temp4.charAt(infos.thisCharIndex) == '#') {
+                            prevLine.setCharAt(infos.thisCharIndex, '<');
+                            tempLines.set(infos.thisLinesIndex, prevLine.toString());
+                        } else {
+                            if (temp4.charAt(infos.thisCharIndex) == 'X') {
+                                count--;
+                            }
+                            newLine4.setCharAt(infos.thisCharIndex, 'v');
+                            tempLines.set(infos.thisLinesIndex + 1, newLine4.toString());
+                            move = true;
+                        }
+                    } else {
+                        event = true;
+                        move = true;
+                    }
+
                     break;
             }
-            count++;
-            System.out.println("Direction: " + infos.thisDirection);
+            if (move) {
+                prevLine.setCharAt(infos.thisCharIndex, 'X');
+                tempLines.set(infos.thisLinesIndex, prevLine.toString());
+                count++;
+            }
         }
         return count;
     }
 
-    public static int part2() throws IOException{
+    public static int part2() throws IOException {
         return 0;
     }
 
-    public static informations CheckForArrows(List<String> inputLines) throws IOException{
+    public static informations CheckForArrows(List<String> inputLines) throws IOException {
         String direction = "";
         int safedLinesIndex = -1;
         int safedCharsIndex = -1;
@@ -109,7 +174,6 @@ public class Day6 {
                 }
             }
         }
-        System.out.println("Line: "+ (safedLinesIndex+1) + ", Char: "+ (safedCharsIndex+1));
         return new informations(safedLinesIndex, safedCharsIndex, direction);
     }
 }
